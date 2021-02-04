@@ -1,0 +1,283 @@
+/*
+ * Author: Ally Delgado
+
+ * 12/16/19
+ * Sort takes files and sorts them using different sorting algorithms: bubble sort, selection sort, table sort, and quicksort
+ *
+ 
+ */
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+public class Sort {
+    
+    
+    //variable declarations
+    Scanner consoleInput = new Scanner(System.in);
+    String input;
+    Scanner fileInput;
+    int [] inputArray;
+    long startTime;
+    boolean run = true; //keep asking for input file after one is sorted so you don't need to keep clicking "run"
+    
+
+    public static void main(String[] args) {
+   	 new Sort();
+    }
+    
+    public Sort() {
+   	 
+   	 while (run = true) {
+   		 //ask for input on which file to open
+   		 System.out.println("Enter a number for the input file. ");
+   		 System.out.println("1: input1.txt   2: input2.txt	3: input3.txt   4: input4.txt   5: input5.txt");
+   		 input = consoleInput.nextLine();
+   		 
+   		 //weed out illegitimate input
+   		 if (input.length() != 1 && input.charAt(0) != '1' && input.charAt(0) != '2'
+   				 && input.charAt(0) != '3' && input.charAt(0) != '4') {
+   			 System.out.println("Enter 1, 2, 3, or 4. ");
+   			 while (input.length() != 1 && input.charAt(0) != '1' && input.charAt(0) != '2'
+   					 && input.charAt(0) != '3' && input.charAt(0) != '4' && input.charAt(0) != '5') {
+   				 input = consoleInput.nextLine();
+   			 }
+   		 }
+   		 
+   		 //scan the file input
+   		 try { //try to do this and if it goes wrong,
+   			 fileInput = new Scanner(new File("input" + input.charAt(0) + ".txt"));
+   		 } catch (FileNotFoundException e) {
+   			 e.printStackTrace(); //print error messages
+   			 System.exit(0);
+   		 }
+   		 
+   		 String infile = fileInput.nextLine();
+   		 String[] inputStringArray = infile.split(",");
+   		 inputArray = new int[inputStringArray.length]; // set it so they're the same length    
+   		 for (int i = 0; i < inputStringArray.length; i++) { //while i is less than the array length,
+   			 inputArray[i] = Integer.parseInt(inputStringArray[i]); //parse the numbers passed in through array
+   			 System.out.println(inputArray[i]);
+   		 }
+   		 
+   		 
+   		 //ask for input on which sort to use
+   				 System.out.println("Enter a number for the sort you want to use. ");
+   				 System.out.println("1: Bubble   2: Selection	3: Table	4: Quicksort");
+   				 input = consoleInput.nextLine();
+   				 
+   				 //weed out illegitimate input
+   				 if (input.length() != 1 && input.charAt(0) != '1' && input.charAt(0) != '2'
+   						 && input.charAt(0) != '3' && input.charAt(0) != '4') {
+   					 System.out.println("Enter 1, 2, 3, or 4. ");
+   					 while (input.length() != 1 && input.charAt(0) != '1' && input.charAt(0) != '2'
+   							 && input.charAt(0) != '3') {
+   						 input = consoleInput.nextLine();
+   					 }
+   				 }
+   		 
+   				 startTime = System.currentTimeMillis();
+   				 
+   				 //Bubble sort button:
+   				 if (input.equals("1")) {
+   					 inputArray = bubbleSort(inputArray);
+   					 for (int i = 0; i < inputArray.length; i++) {
+   						 System.out.println(inputArray[i]);
+   					 
+   					 }
+   				 }
+   				 
+   				 
+   				 //Selection sort button:
+   				 if (input.equals("2")) {
+   					 inputArray = selectionSort(inputArray);
+   					 for (int i = 0; i < inputArray.length; i++) {
+   						 System.out.println(inputArray[i]);
+   					 }
+   				 }
+   				 //Table sort button:
+   				 if (input.equals("3")) {
+   					 inputArray = tableSort(inputArray);
+   					 for (int i = 0; i < inputArray.length; i++) {
+   						 System.out.println(inputArray[i]);
+   					 
+   					 }
+   				 }
+   				 //Quicksort button:
+   				 if (input.equals("4")) {
+   					 
+   					 inputArray = quickSort(inputArray, 0, inputArray.length-1);
+   					 for (int i = 0; i < inputArray.length; i++) {
+   						 System.out.println(inputArray[i]);
+   					 }
+   				 }
+   				 
+   				 long totalTime = System.currentTimeMillis() - startTime;
+   				 System.out.println("Total time: " + totalTime);
+   				 PrintWriter pw; //declare try catch
+   				 
+   				 try {
+   				 pw = new PrintWriter(new FileWriter(new File("output.txt")));
+   				 String output = "";
+   				 for (int L = 0; L < inputArray.length; L++) {
+   					 output += inputArray[L] + ",";   				 
+   				 }
+   				 
+   				 output += "\nTotal Time: " + totalTime;
+   				 pw.write(output);
+   				 pw.close();
+   				 
+   				 } catch (IOException ex) {
+   					 ex.printStackTrace();
+   					 System.exit(0);
+   				 }
+   				 
+   	 }
+   			 
+    }
+    
+    
+    
+    //Bubble Sort takes each of the two number pairs and compares them, and moves the larger # to the right
+    int[] bubbleSort(int[] array) {
+   	 for (int p = 0; p < array.length; p++) {
+   		 for (int i = 0; i < array.length - 1 ; i++) {
+   			 //if one on left is bigger,
+   			 if(array[i] > array[i+1]) {
+   				 //swap which  one is biggest
+   				 int temp = array[i]; //create a temporary variable to hold the value
+   				 array[i] = array[i+1];
+   				 array[i+1] = temp;
+   				 
+   			 }
+   		 }
+   	 }
+   		 
+   	 return array;
+    }
+    
+    //Selection sort finds the smallest number out of the whole set and puts it in the front (swap), then repeats
+    int[] selectionSort(int[] array) {
+   	 
+   	 for (int j = 0; j < array.length; j++) {
+   		 int smallestNumber = array[j];
+   		 int smallestIndex = j;
+   		 
+   		 for (int i = j; i < array.length; i++) { //start inner loop at where j is so we don't look at the same # over and over
+   			 if (array[i] < smallestNumber) {
+   				 smallestNumber = array[i];
+   				 smallestIndex = i;
+   			 }
+   		 }
+   		 //swap
+   		 int temp = array[smallestIndex];
+   		 array[smallestIndex] = array[j];
+   		 array[j] = temp;
+   	 }
+   	 return array;
+    }
+    
+    //tally up how many times you see a # and print out the number of times
+    int[] tableSort(int[] array) {
+   	 int[] tally = new int[1001];
+   	 for (int i = 0; i < array.length; i++) {
+   		 tally[array[i]]++; //array[i] is a number, you go to that slot in the tally array and add 1 to it
+   		 
+   	 }
+   	 //translate back into array
+   	 int count = 0; // i keep tracks of actual number
+   	 for (int i = 0; i < tally.length; i++) {
+   		 for (int j = 0; j < tally[i]; j++) {
+   			 //j keeps track of how many times number appears
+   			 array[count] = i;
+   			 count++; //keep track of where in the array we're at
+   			 
+   		 }
+   	 }
+   	 
+   	 
+   	 return array;
+    }
+    
+    /* quicksort declares a point ("pivot") and splits the data into two groups:
+     * those bigger than the point and those smaller than it
+     * It then recursively sorts each half (using the same idea where you split it into
+     * a group higher than pivot and lower and arrange)
+     */
+    
+    //functions: partition() , quicksort() , swap() , printArray()
+    int[] quickSort(int[] array, int low, int high) {
+   	 
+   	 //initialize variables
+   	 int i = 0;
+   	 int pivot = 0;
+   	 int storeIndex = 0;
+   	 int pivotIndex = 0;
+   	 
+   	 if (low < high){
+   		 pivot = partition(array, low, high);
+   		 
+   		 quickSort(array, low, pivot-1); //sort the things before the pivot
+   		 quickSort(array, pivot+1, high); //sort the things after the pivot
+   	 }
+   	 
+   	 return array;
+    
+    }
+    
+    //the following 3 functions are to be called by the main quickSort function above
+    
+    
+    //partition algorithm; main quicksort idea is here
+    public int partition(int array[], int low, int high){
+   	 
+   	 
+   	 int pivotIndex = high; //set pivot to the high (which right now is array length - 1)
+   	 int i = (low-1); //index of smaller element
+   	 int j = 0;
+   	 
+   	 
+   	 for (j = low; j < high; j++) { //keep loop within parameters
+   		 if (array[j] < array[pivotIndex]){ //if the element is less than the value of the pivot index
+   			 i++; //counting variable increases
+   			 swap(array, i, j);
+   		 }
+   	 }
+   	 swap(array, i+1, j);
+   	 return i+1;
+    }
+    
+    // function to swap numbers that will be passed in
+    public int[] swap(int array[], int first, int second){
+   	 int temp = array[first]; //create a temporary variable to hold the index
+   	 array[first] = array[second]; //set first element to second
+   	 array[second] = temp; //then second to temp
+   	 
+   	 return array;
+    }
+    
+    //function to print array out
+    public void printArray(int array[]){
+   	 int high = array.length;
+   	 for (int i = 0; i < high; i++) {
+   		 System.out.println(array[i]);
+   	 }
+   	 
+   	 
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
